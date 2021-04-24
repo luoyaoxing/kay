@@ -34,6 +34,6 @@ func NewGRPCServer(c *conf.Server, greeter *service.GreeterService) *grpc.Server
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterGreeterServer(srv, greeter)
+	v1.RegisterGreeterServer(srv.Server, greeter)
 	return srv
 }
