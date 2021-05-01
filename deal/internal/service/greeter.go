@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
+	v1 "deal/api/helloworld/v1"
+	"deal/internal/biz"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-	v1 "order/api/helloworld/v1"
-	"order/internal/biz"
 )
 
 // GreeterService is a greeter service.

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"os"
 
+	"deal/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -11,7 +12,6 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"gopkg.in/yaml.v2"
-	"order/internal/conf"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"

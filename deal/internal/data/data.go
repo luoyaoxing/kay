@@ -1,9 +1,9 @@
 package data
 
 import (
+	"deal/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	"order/internal/conf"
 )
 
 // ProviderSet is data providers.

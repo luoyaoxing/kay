@@ -5,14 +5,14 @@
 package main
 
 import (
+	"deal/internal/biz"
+	"deal/internal/conf"
+	"deal/internal/data"
+	"deal/internal/server"
+	"deal/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	"order/internal/biz"
-	"order/internal/conf"
-	"order/internal/data"
-	"order/internal/server"
-	"order/internal/service"
 )
 
 // initApp init kratos application.
