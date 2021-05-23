@@ -1,7 +1,7 @@
 syntax = "proto3";
 package api.product.v1;
 
-option go_package = "app/product/service/internal/conf;conf";
+option go_package = "kay/app/product/service/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 
