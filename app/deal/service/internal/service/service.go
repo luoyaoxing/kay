@@ -19,5 +19,5 @@ type DealService struct {
 }
 
 func NewDealService(uc *biz.DealUseCase, logger log.Logger) pb.DealServer {
-	return &DealService{uc: uc, log: log.NewHelper("deal/service", logger)}
+	return &DealService{uc: uc, log: log.NewHelper("server/service", logger)}
 }

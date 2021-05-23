@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"kay/app/deal/service/internal/conf"
 	"kay/app/deal/service/internal/data/ent"
@@ -19,7 +20,7 @@ type Data struct {
 
 // NewData .
 func NewData(conf *conf.Data, logger log.Logger) (*Data, func(), error) {
-	log := log.NewHelper("deal/data", logger)
+	log := log.NewHelper("server/data", logger)
 	log.Infof("NewData start conf:%s \n", dec.JsonEncode(conf))
 
 	client, err := ent.Open(

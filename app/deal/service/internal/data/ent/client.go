@@ -132,7 +132,7 @@ func NewDealClient(c config) *DealClient {
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `deal.Hooks(f(g(h())))`.
+// A call to `Use(f, g, h)` equals to `server.Hooks(f(g(h())))`.
 func (c *DealClient) Use(hooks ...Hook) {
 	c.hooks.Deal = append(c.hooks.Deal, hooks...)
 }

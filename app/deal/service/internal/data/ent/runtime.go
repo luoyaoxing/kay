@@ -16,58 +16,58 @@ func init() {
 	_ = dealFields
 	// dealDescSkuId is the schema descriptor for skuId field.
 	dealDescSkuId := dealFields[1].Descriptor()
-	// deal.DefaultSkuId holds the default value on creation for the skuId field.
+	// server.DefaultSkuId holds the default value on creation for the skuId field.
 	deal.DefaultSkuId = dealDescSkuId.Default.(int64)
-	// deal.SkuIdValidator is a validator for the "skuId" field. It is called by the builders before save.
+	// server.SkuIdValidator is a validator for the "skuId" field. It is called by the builders before save.
 	deal.SkuIdValidator = dealDescSkuId.Validators[0].(func(int64) error)
 	// dealDescProductId is the schema descriptor for productId field.
 	dealDescProductId := dealFields[2].Descriptor()
-	// deal.DefaultProductId holds the default value on creation for the productId field.
+	// server.DefaultProductId holds the default value on creation for the productId field.
 	deal.DefaultProductId = dealDescProductId.Default.(int64)
-	// deal.ProductIdValidator is a validator for the "productId" field. It is called by the builders before save.
+	// server.ProductIdValidator is a validator for the "productId" field. It is called by the builders before save.
 	deal.ProductIdValidator = dealDescProductId.Validators[0].(func(int64) error)
 	// dealDescProductName is the schema descriptor for productName field.
 	dealDescProductName := dealFields[3].Descriptor()
-	// deal.DefaultProductName holds the default value on creation for the productName field.
+	// server.DefaultProductName holds the default value on creation for the productName field.
 	deal.DefaultProductName = dealDescProductName.Default.(string)
-	// deal.ProductNameValidator is a validator for the "productName" field. It is called by the builders before save.
+	// server.ProductNameValidator is a validator for the "productName" field. It is called by the builders before save.
 	deal.ProductNameValidator = dealDescProductName.Validators[0].(func(string) error)
 	// dealDescUID is the schema descriptor for uid field.
 	dealDescUID := dealFields[4].Descriptor()
-	// deal.DefaultUID holds the default value on creation for the uid field.
+	// server.DefaultUID holds the default value on creation for the uid field.
 	deal.DefaultUID = dealDescUID.Default.(int64)
-	// deal.UIDValidator is a validator for the "uid" field. It is called by the builders before save.
+	// server.UIDValidator is a validator for the "uid" field. It is called by the builders before save.
 	deal.UIDValidator = dealDescUID.Validators[0].(func(int64) error)
 	// dealDescCustomName is the schema descriptor for customName field.
 	dealDescCustomName := dealFields[5].Descriptor()
-	// deal.DefaultCustomName holds the default value on creation for the customName field.
+	// server.DefaultCustomName holds the default value on creation for the customName field.
 	deal.DefaultCustomName = dealDescCustomName.Default.(string)
-	// deal.CustomNameValidator is a validator for the "customName" field. It is called by the builders before save.
+	// server.CustomNameValidator is a validator for the "customName" field. It is called by the builders before save.
 	deal.CustomNameValidator = dealDescCustomName.Validators[0].(func(string) error)
 	// dealDescPhone is the schema descriptor for phone field.
 	dealDescPhone := dealFields[6].Descriptor()
-	// deal.DefaultPhone holds the default value on creation for the phone field.
+	// server.DefaultPhone holds the default value on creation for the phone field.
 	deal.DefaultPhone = dealDescPhone.Default.(string)
-	// deal.PhoneValidator is a validator for the "phone" field. It is called by the builders before save.
+	// server.PhoneValidator is a validator for the "phone" field. It is called by the builders before save.
 	deal.PhoneValidator = dealDescPhone.Validators[0].(func(string) error)
 	// dealDescPrice is the schema descriptor for price field.
 	dealDescPrice := dealFields[7].Descriptor()
-	// deal.DefaultPrice holds the default value on creation for the price field.
+	// server.DefaultPrice holds the default value on creation for the price field.
 	deal.DefaultPrice = dealDescPrice.Default.(int)
-	// deal.PriceValidator is a validator for the "price" field. It is called by the builders before save.
+	// server.PriceValidator is a validator for the "price" field. It is called by the builders before save.
 	deal.PriceValidator = dealDescPrice.Validators[0].(func(int) error)
 	// dealDescAddtime is the schema descriptor for addtime field.
 	dealDescAddtime := dealFields[8].Descriptor()
-	// deal.DefaultAddtime holds the default value on creation for the addtime field.
+	// server.DefaultAddtime holds the default value on creation for the addtime field.
 	deal.DefaultAddtime = dealDescAddtime.Default.(func() time.Time)
 	// dealDescMtime is the schema descriptor for mtime field.
 	dealDescMtime := dealFields[9].Descriptor()
-	// deal.DefaultMtime holds the default value on creation for the mtime field.
+	// server.DefaultMtime holds the default value on creation for the mtime field.
 	deal.DefaultMtime = dealDescMtime.Default.(func() time.Time)
-	// deal.UpdateDefaultMtime holds the default value on update for the mtime field.
+	// server.UpdateDefaultMtime holds the default value on update for the mtime field.
 	deal.UpdateDefaultMtime = dealDescMtime.UpdateDefault.(func() time.Time)
 	// dealDescID is the schema descriptor for id field.
 	dealDescID := dealFields[0].Descriptor()
-	// deal.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	// server.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	deal.IDValidator = dealDescID.Validators[0].(func(int64) error)
 }

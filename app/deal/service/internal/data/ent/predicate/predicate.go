@@ -6,5 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Deal is the predicate function for deal builders.
+// Deal is the predicate function for server builders.
 type Deal func(*sql.Selector)

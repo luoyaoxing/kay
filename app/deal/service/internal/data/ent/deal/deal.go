@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	// Label holds the string label denoting the deal type in the database.
-	Label = "deal"
+	// Label holds the string label denoting the server type in the database.
+	Label = "server"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "fdeal_id"
 	// FieldSkuId holds the string denoting the skuid field in the database.
@@ -29,11 +29,11 @@ const (
 	FieldAddtime = "faddtime"
 	// FieldMtime holds the string denoting the mtime field in the database.
 	FieldMtime = "fmtime"
-	// Table holds the table name of the deal in the database.
+	// Table holds the table name of the server in the database.
 	Table = "t_deal"
 )
 
-// Columns holds all SQL columns for deal fields.
+// Columns holds all SQL columns for server fields.
 var Columns = []string{
 	FieldID,
 	FieldSkuId,

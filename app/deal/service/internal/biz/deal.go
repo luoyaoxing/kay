@@ -18,11 +18,11 @@ type DealUseCase struct {
 }
 
 func NewDealUseCase(repo DealRepo, logger log.Logger) *DealUseCase {
-	return &DealUseCase{repo: repo, log: log.NewHelper("deal/biz", logger)}
+	return &DealUseCase{repo: repo, log: log.NewHelper("server/biz", logger)}
 }
 
 func (uc *DealUseCase) CreateDeal(ctx context.Context, deal *Deal) error {
-	uc.log.Infof("CreateDeal start deal:%s", dec.JsonEncode(deal))
+	uc.log.Infof("CreateDeal start server:%s", dec.JsonEncode(deal))
 
 	err := uc.repo.CreateDeal(ctx, deal)
 	if err != nil {

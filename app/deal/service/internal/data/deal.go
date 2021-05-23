@@ -14,11 +14,11 @@ type dealRepo struct {
 }
 
 func NewDealRepo(data *Data, logger log.Logger) *dealRepo {
-	return &dealRepo{data, log.NewHelper("deal/data", logger)}
+	return &dealRepo{data, log.NewHelper("server/data", logger)}
 }
 
 func (repo *dealRepo) CreateDeal(ctx context.Context, deal *biz.Deal) error {
-	repo.log.Infof("CreateDeal start deal:%s", dec.JsonEncode(deal))
+	repo.log.Infof("CreateDeal start server:%s", dec.JsonEncode(deal))
 
 	_, err := repo.data.db.Deal.Create().
 		SetID(deal.DealId).
