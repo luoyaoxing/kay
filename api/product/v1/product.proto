@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package api.product.v1;
+
+option go_package = "kay/api/product/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.product.v1";
+
+import "common.proto";
+
+service Product {
+    rpc CreateProduct (CreateProductRequest) returns (CreateProductReply);
+    rpc GetProductInfo (GetProductInfoRequest) returns (GetProductInfoReply);
+    rpc ListProductByProductId (ListProductByProductIdRequest) returns (ListProductByProductIdReply);
+}
+
+message ProductDTO {
+    int64 sku_id = 1;
+    int64 version_id = 2;
+    string version_name = 3;
+    int64 product_id = 4;
+    string product_name = 5;
+    int32 price = 6;
+    string attr = 7;
+    string product_desc = 8;
+}
+
+message CreateProductRequest {
+    RequestHeader header = 1;
+    message Body {
+        ProductDTO product = 1;
+    }
+    Body body = 2;
+}
+message CreateProductReply {
+    ResponseHeader header = 1;
+    message Body {
+        int64 sku_id = 1;
+    }
+    Body body = 2;
+}
+
+message GetProductInfoRequest {
+    RequestHeader header = 1;
+    message Body {
+        int64 sku_id = 1;
+    }
+    Body body = 2;
+}
+
+message GetProductInfoReply {
+    ResponseHeader header = 1;
+    message Body {
+        ProductDTO product = 1;
+    }
+    Body body = 2;
+}
+
+message ListProductByProductIdRequest {
+    RequestHeader header = 1;
+    message Body {
+        int64 product_id = 1;
+    }
+    Body body = 2;
+}
+
+message ListProductByProductIdReply {
+    ResponseHeader header = 1;
+    message Body {
+        repeated ProductDTO productList = 1;
+    }
+    Body body = 2;
+}
