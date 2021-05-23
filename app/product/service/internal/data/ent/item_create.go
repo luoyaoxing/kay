@@ -175,26 +175,11 @@ func (ic *ItemCreate) check() error {
 	if _, ok := ic.mutation.TotalStock(); !ok {
 		return &ValidationError{Name: "totalStock", err: errors.New("ent: missing required field \"totalStock\"")}
 	}
-	if v, ok := ic.mutation.TotalStock(); ok {
-		if err := item.TotalStockValidator(v); err != nil {
-			return &ValidationError{Name: "totalStock", err: fmt.Errorf("ent: validator failed for field \"totalStock\": %w", err)}
-		}
-	}
 	if _, ok := ic.mutation.ConsumeStock(); !ok {
 		return &ValidationError{Name: "consumeStock", err: errors.New("ent: missing required field \"consumeStock\"")}
 	}
-	if v, ok := ic.mutation.ConsumeStock(); ok {
-		if err := item.ConsumeStockValidator(v); err != nil {
-			return &ValidationError{Name: "consumeStock", err: fmt.Errorf("ent: validator failed for field \"consumeStock\": %w", err)}
-		}
-	}
 	if _, ok := ic.mutation.LeftStock(); !ok {
 		return &ValidationError{Name: "leftStock", err: errors.New("ent: missing required field \"leftStock\"")}
-	}
-	if v, ok := ic.mutation.LeftStock(); ok {
-		if err := item.LeftStockValidator(v); err != nil {
-			return &ValidationError{Name: "leftStock", err: fmt.Errorf("ent: validator failed for field \"leftStock\": %w", err)}
-		}
 	}
 	if _, ok := ic.mutation.Addtime(); !ok {
 		return &ValidationError{Name: "addtime", err: errors.New("ent: missing required field \"addtime\"")}

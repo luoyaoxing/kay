@@ -87,6 +87,7 @@ func (s *ProductService) ListProductByProductId(ctx context.Context, req *pb.Lis
 	replyHeader.Errno = 0
 	replyHeader.Errmsg = "success"
 
+	reply.Header = replyHeader
 	productList, err := s.productUc.ListProductByProductId(ctx, req.Body.ProductId)
 	if err != nil {
 		replyHeader.Errno = 10001
@@ -95,7 +96,7 @@ func (s *ProductService) ListProductByProductId(ctx context.Context, req *pb.Lis
 		return reply, nil
 	}
 
-	productDtoList := make([]*pb.ProductDTO, len(productList))
+	var productDtoList []*pb.ProductDTO
 	for _, product := range productList {
 		productDto := &pb.ProductDTO{}
 		product.ToProductDto(productDto)

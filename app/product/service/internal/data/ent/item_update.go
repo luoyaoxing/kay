@@ -123,18 +123,12 @@ func (iu *ItemUpdate) Save(ctx context.Context) (int, error) {
 	)
 	iu.defaults()
 	if len(iu.hooks) == 0 {
-		if err = iu.check(); err != nil {
-			return 0, err
-		}
 		affected, err = iu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ItemMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = iu.check(); err != nil {
-				return 0, err
 			}
 			iu.mutation = mutation
 			affected, err = iu.sqlSave(ctx)
@@ -179,26 +173,6 @@ func (iu *ItemUpdate) defaults() {
 		v := item.UpdateDefaultMtime()
 		iu.mutation.SetMtime(v)
 	}
-}
-
-// check runs all checks and user-defined validators on the builder.
-func (iu *ItemUpdate) check() error {
-	if v, ok := iu.mutation.TotalStock(); ok {
-		if err := item.TotalStockValidator(v); err != nil {
-			return &ValidationError{Name: "totalStock", err: fmt.Errorf("ent: validator failed for field \"totalStock\": %w", err)}
-		}
-	}
-	if v, ok := iu.mutation.ConsumeStock(); ok {
-		if err := item.ConsumeStockValidator(v); err != nil {
-			return &ValidationError{Name: "consumeStock", err: fmt.Errorf("ent: validator failed for field \"consumeStock\": %w", err)}
-		}
-	}
-	if v, ok := iu.mutation.LeftStock(); ok {
-		if err := item.LeftStockValidator(v); err != nil {
-			return &ValidationError{Name: "leftStock", err: fmt.Errorf("ent: validator failed for field \"leftStock\": %w", err)}
-		}
-	}
-	return nil
 }
 
 func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -397,18 +371,12 @@ func (iuo *ItemUpdateOne) Save(ctx context.Context) (*Item, error) {
 	)
 	iuo.defaults()
 	if len(iuo.hooks) == 0 {
-		if err = iuo.check(); err != nil {
-			return nil, err
-		}
 		node, err = iuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ItemMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = iuo.check(); err != nil {
-				return nil, err
 			}
 			iuo.mutation = mutation
 			node, err = iuo.sqlSave(ctx)
@@ -453,26 +421,6 @@ func (iuo *ItemUpdateOne) defaults() {
 		v := item.UpdateDefaultMtime()
 		iuo.mutation.SetMtime(v)
 	}
-}
-
-// check runs all checks and user-defined validators on the builder.
-func (iuo *ItemUpdateOne) check() error {
-	if v, ok := iuo.mutation.TotalStock(); ok {
-		if err := item.TotalStockValidator(v); err != nil {
-			return &ValidationError{Name: "totalStock", err: fmt.Errorf("ent: validator failed for field \"totalStock\": %w", err)}
-		}
-	}
-	if v, ok := iuo.mutation.ConsumeStock(); ok {
-		if err := item.ConsumeStockValidator(v); err != nil {
-			return &ValidationError{Name: "consumeStock", err: fmt.Errorf("ent: validator failed for field \"consumeStock\": %w", err)}
-		}
-	}
-	if v, ok := iuo.mutation.LeftStock(); ok {
-		if err := item.LeftStockValidator(v); err != nil {
-			return &ValidationError{Name: "leftStock", err: fmt.Errorf("ent: validator failed for field \"leftStock\": %w", err)}
-		}
-	}
-	return nil
 }
 
 func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) {

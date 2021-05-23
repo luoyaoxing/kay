@@ -48,16 +48,10 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultTotalStock holds the default value on creation for the "totalStock" field.
 	DefaultTotalStock int
-	// TotalStockValidator is a validator for the "totalStock" field. It is called by the builders before save.
-	TotalStockValidator func(int) error
 	// DefaultConsumeStock holds the default value on creation for the "consumeStock" field.
 	DefaultConsumeStock int
-	// ConsumeStockValidator is a validator for the "consumeStock" field. It is called by the builders before save.
-	ConsumeStockValidator func(int) error
 	// DefaultLeftStock holds the default value on creation for the "leftStock" field.
 	DefaultLeftStock int
-	// LeftStockValidator is a validator for the "leftStock" field. It is called by the builders before save.
-	LeftStockValidator func(int) error
 	// DefaultAddtime holds the default value on creation for the "addtime" field.
 	DefaultAddtime func() time.Time
 	// DefaultMtime holds the default value on creation for the "mtime" field.

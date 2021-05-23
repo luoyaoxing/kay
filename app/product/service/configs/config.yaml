@@ -8,7 +8,7 @@ server:
 data:
   database:
     driver: mysql
-    source: root:636968@tcp(106.54.179.120:3306)/kay
+    source: root:636968@tcp(106.54.179.120:3306)/kay?parseTime=true
   redis:
     addr: 106.54.179.120:6379
     read_timeout: 0.2s

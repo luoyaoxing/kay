@@ -69,7 +69,7 @@ func (repo *productRepo) ListProductByProductId(ctx context.Context, productId i
 		return nil, err
 	}
 
-	pdl := make([]*biz.Product, len(pl))
+	var pdl []*biz.Product
 	for _, p := range pl {
 		productPo := &biz.Product{}
 		productPo.FromProductPo(p)

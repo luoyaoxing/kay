@@ -24,7 +24,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "D:/dev/go/kay/app/product/service/configs", "config path, eg: -conf config.yaml")
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, rr registry.Registrar) *kratos.App {
@@ -78,9 +78,11 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	if err != nil {
 		return nil, nil, err
 	}
+	itemStockRepo := data.NewItemStockRepo(dataData, logger)
 	productRepo := data.NewProductRepo(dataData, logger)
+	itemStockUseCase := biz.NewItemStockUseCase(itemStockRepo, logger)
 	productUseCase := biz.NewProductUseCase(productRepo, logger)
-	productService := service.NewProductService(productUseCase, logger)
+	productService := service.NewProductService(productUseCase, itemStockUseCase, logger)
 	grpcServer := server.NewGrpcServer(confServer, productService)
 	registrar := server.NewRegistrar()
 	app := newApp(logger, grpcServer, registrar)

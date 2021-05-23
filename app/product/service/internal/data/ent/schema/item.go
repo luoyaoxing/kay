@@ -23,9 +23,9 @@ func (Item) Annotations() []schema.Annotation {
 func (Item) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").Positive().StorageKey("fsku_id"),
-		field.Int("totalStock").Positive().Default(0).StorageKey("ftotal_stock"),
-		field.Int("consumeStock").Positive().Default(0).StorageKey("fconsume_Stock"),
-		field.Int("leftStock").Positive().Default(0).StorageKey("fleft_Stock"),
+		field.Int("totalStock").Default(0).StorageKey("ftotal_stock"),
+		field.Int("consumeStock").Default(0).StorageKey("fconsume_Stock"),
+		field.Int("leftStock").Default(0).StorageKey("fleft_Stock"),
 		field.Time("addtime").Default(time.Now).StorageKey("faddtime"),
 		field.Time("mtime").UpdateDefault(time.Now).Default(time.Now).StorageKey("fmtime"),
 	}

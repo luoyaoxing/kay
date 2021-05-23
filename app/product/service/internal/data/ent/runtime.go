@@ -19,20 +19,14 @@ func init() {
 	itemDescTotalStock := itemFields[1].Descriptor()
 	// item.DefaultTotalStock holds the default value on creation for the totalStock field.
 	item.DefaultTotalStock = itemDescTotalStock.Default.(int)
-	// item.TotalStockValidator is a validator for the "totalStock" field. It is called by the builders before save.
-	item.TotalStockValidator = itemDescTotalStock.Validators[0].(func(int) error)
 	// itemDescConsumeStock is the schema descriptor for consumeStock field.
 	itemDescConsumeStock := itemFields[2].Descriptor()
 	// item.DefaultConsumeStock holds the default value on creation for the consumeStock field.
 	item.DefaultConsumeStock = itemDescConsumeStock.Default.(int)
-	// item.ConsumeStockValidator is a validator for the "consumeStock" field. It is called by the builders before save.
-	item.ConsumeStockValidator = itemDescConsumeStock.Validators[0].(func(int) error)
 	// itemDescLeftStock is the schema descriptor for leftStock field.
 	itemDescLeftStock := itemFields[3].Descriptor()
 	// item.DefaultLeftStock holds the default value on creation for the leftStock field.
 	item.DefaultLeftStock = itemDescLeftStock.Default.(int)
-	// item.LeftStockValidator is a validator for the "leftStock" field. It is called by the builders before save.
-	item.LeftStockValidator = itemDescLeftStock.Validators[0].(func(int) error)
 	// itemDescAddtime is the schema descriptor for addtime field.
 	itemDescAddtime := itemFields[4].Descriptor()
 	// item.DefaultAddtime holds the default value on creation for the addtime field.
