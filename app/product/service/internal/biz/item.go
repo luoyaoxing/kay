@@ -25,7 +25,7 @@ func NewItemStockUseCase(repo ItemStockRepo, logger log.Logger) *ItemStockUseCas
 func (uc *ItemStockUseCase) CreateStockWithTx(ctx context.Context, stock *ItemStock) error {
 	uc.log.Infof("CreateStock start stock:%s", dec.JsonEncode(stock))
 
-	err := uc.repo.CreateStock(ctx, stock)
+	err := uc.repo.CreateStockWithTx(ctx, stock)
 	if err != nil {
 		uc.log.Errorf("CreateStock failed err:%s", err.Error())
 		return err
