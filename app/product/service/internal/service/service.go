@@ -2,9 +2,12 @@ package service
 
 import (
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/google/wire"
 	pb "kay/api/product/v1"
 	"kay/app/product/service/internal/biz"
 )
+
+var ProviderSet = wire.NewSet(NewProductService)
 
 type ProductService struct {
 	pb.UnimplementedProductServer

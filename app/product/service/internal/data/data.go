@@ -3,16 +3,20 @@ package data
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/log"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/wire"
 	"kay/app/product/service/internal/conf"
 	"kay/app/product/service/internal/data/ent"
 	"kay/pkg/utils/dec"
 )
 
+var ProviderSet = wire.NewSet(NewData)
+
 type Data struct {
 	db *ent.Client
 }
 
-func NewData(conf conf.Data, logger log.Logger) (*Data, func(), error) {
+func NewData(conf *conf.Data, logger log.Logger) (*Data, func(), error) {
 	log := log.NewHelper("product/data", logger)
 	log.Infof("NewData start conf:%s \n", dec.JsonEncode(conf))
 
