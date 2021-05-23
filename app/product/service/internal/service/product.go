@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"kay/app/product/service/internal/biz"
+	"kay/app/product/service/internal/common"
+	"kay/app/product/service/internal/data/ent"
 	"kay/pkg/utils/dec"
 
 	pb "kay/api/product/v1"
@@ -16,16 +18,39 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *pb.CreateProduc
 	replyHeader := &pb.ResponseHeader{}
 	replyHeader.Errno = 0
 	replyHeader.Errmsg = "success"
-
 	reply.Header = replyHeader
+
+	tx, err := s.data.GetDb().Tx(ctx)
+	tx.OnCommit(func(committer ent.Committer) ent.Committer {
+		s.log.Infof("tx on commit")
+		return committer
+	})
+	tx.OnRollback(func(rollbacker ent.Rollbacker) ent.Rollbacker {
+		s.log.Infof("tx on rollback")
+		return rollbacker
+	})
+
+	if err != nil {
+		replyHeader.Errno = 10003
+		replyHeader.Errmsg = "开启事务失败"
+		s.log.Errorf("Tx failed err:%s", err.Error())
+		return reply, nil
+	}
+
+	ctx = context.WithValue(ctx, common.TxKey, tx)
+
 	product := &biz.Product{}
 	product.FromProductDto(req.GetBody().GetProduct())
 
-	skuId, err := s.productUc.CreateProduct(ctx, product)
+	skuId, err := s.productUc.CreateProductWithTx(ctx, product)
 	if err != nil {
 		replyHeader.Errno = 10001
 		replyHeader.Errmsg = "创建产品失败"
 		s.log.Errorf("create product failed err:%s", err.Error())
+		err = tx.Rollback()
+		if err != nil {
+			s.log.Errorf("Rollback failed err:%s", err.Error())
+		}
 		return reply, nil
 	}
 
@@ -35,11 +60,23 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *pb.CreateProduc
 		SkuId:      skuId,
 		TotalStock: stock,
 	}
-	err = s.itemStockUc.CreateStock(ctx, itemStock)
+	err = s.itemStockUc.CreateStockWithTx(ctx, itemStock)
 	if err != nil {
 		replyHeader.Errno = 10001
 		replyHeader.Errmsg = "创建产品库存失败"
 		s.log.Errorf("CreateStock failed err:%s", err.Error())
+		err = tx.Rollback()
+		if err != nil {
+			s.log.Errorf("Rollback failed err:%s", err.Error())
+		}
+		return reply, nil
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		replyHeader.Errno = 10004
+		replyHeader.Errmsg = "事务提交失败"
+		s.log.Errorf("Commit failed err:%s", err.Error())
 		return reply, nil
 	}
 

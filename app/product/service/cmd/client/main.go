@@ -17,13 +17,13 @@ func main() {
 
 	client := pb.NewProductClient(conn)
 
-	//CreateProduct(client)
+	CreateProduct(client)
 
 	//GetProductInfo(client)
 
 	//ListProductInfo(client)
 
-	DeStock(client)
+	//DeStock(client)
 }
 
 func DeStock(client pb.ProductClient) {
@@ -88,7 +88,7 @@ func CreateProduct(client pb.ProductClient) {
 		Body: &pb.CreateProductRequest_Body{
 			Stock: 1000,
 			Product: &pb.ProductDTO{
-				SkuId:       5,
+				SkuId:       9,
 				VersionId:   107,
 				VersionName: "华贵版",
 				ProductId:   17598,

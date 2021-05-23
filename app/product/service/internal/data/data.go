@@ -46,3 +46,7 @@ func NewData(conf *conf.Data, logger log.Logger) (*Data, func(), error) {
 		}
 	}, nil
 }
+
+func (data *Data) GetDb() *ent.Client {
+	return data.db
+}

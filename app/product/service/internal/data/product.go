@@ -2,8 +2,11 @@ package data
 
 import (
 	"context"
+	"errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"kay/app/product/service/internal/biz"
+	"kay/app/product/service/internal/common"
+	"kay/app/product/service/internal/data/ent"
 	"kay/app/product/service/internal/data/ent/product"
 	"kay/pkg/utils/dec"
 )
@@ -15,6 +18,37 @@ type productRepo struct {
 
 func NewProductRepo(data *Data, logger log.Logger) *productRepo {
 	return &productRepo{data: data, log: log.NewHelper("product/data", logger)}
+}
+
+func (repo *productRepo) CreateProductWithTx(ctx context.Context, p *biz.Product) (int64, error) {
+	repo.log.Infof("create product start p:%s", dec.JsonEncode(p))
+
+	txValue := ctx.Value(common.TxKey)
+	tx, ok := txValue.(*ent.Tx)
+	if !ok {
+		return 0, errors.New("事务对象不存在")
+	}
+
+	productPo, err := tx.Product.Create().
+		SetID(p.SkuId).
+		SetVersionId(p.VersionId).
+		SetVersionName(p.VersionName).
+		SetProductId(p.ProductId).
+		SetProductName(p.ProductName).
+		SetPrice(p.Price).
+		SetProductDesc(p.ProductDesc).
+		SetAttr(p.Attr).
+		Save(ctx)
+
+	if err != nil {
+		repo.log.Errorf("save failed err:%s", err.Error())
+		return 0, err
+	}
+
+	repo.log.Debugf("save product:%s", dec.JsonEncode(productPo))
+	skuId := productPo.ID
+	repo.log.Infof("create product success skuId:%d", skuId)
+	return skuId, err
 }
 
 func (repo *productRepo) CreateProduct(ctx context.Context, p *biz.Product) (int64, error) {

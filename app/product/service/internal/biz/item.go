@@ -8,6 +8,7 @@ import (
 
 type ItemStockRepo interface {
 	CreateStock(ctx context.Context, stock *ItemStock) error
+	CreateStockWithTx(ctx context.Context, stock *ItemStock) error
 	DeStock(ctx context.Context, skuId int64) (*ItemStock, error)
 }
 
@@ -19,6 +20,19 @@ type ItemStockUseCase struct {
 
 func NewItemStockUseCase(repo ItemStockRepo, logger log.Logger) *ItemStockUseCase {
 	return &ItemStockUseCase{repo: repo, log: log.NewHelper("itemStock/biz", logger)}
+}
+
+func (uc *ItemStockUseCase) CreateStockWithTx(ctx context.Context, stock *ItemStock) error {
+	uc.log.Infof("CreateStock start stock:%s", dec.JsonEncode(stock))
+
+	err := uc.repo.CreateStock(ctx, stock)
+	if err != nil {
+		uc.log.Errorf("CreateStock failed err:%s", err.Error())
+		return err
+	}
+
+	uc.log.Infof("CreateStock success")
+	return nil
 }
 
 func (uc *ItemStockUseCase) CreateStock(ctx context.Context, stock *ItemStock) error {

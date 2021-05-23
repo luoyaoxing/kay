@@ -5,6 +5,8 @@ import (
 	"errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"kay/app/product/service/internal/biz"
+	"kay/app/product/service/internal/common"
+	"kay/app/product/service/internal/data/ent"
 	"kay/app/product/service/internal/data/ent/item"
 	"kay/pkg/utils/dec"
 )
@@ -23,6 +25,30 @@ func (repo *itemStockRepo) CreateStock(ctx context.Context, stock *biz.ItemStock
 	repo.log.Infof("CreateStock start stock:%s", dec.JsonEncode(stock))
 
 	_, err := repo.data.db.Item.Create().
+		SetID(stock.SkuId).
+		SetTotalStock(int(stock.TotalStock)).
+		SetLeftStock(int(stock.TotalStock)).
+		Save(ctx)
+
+	if err != nil {
+		repo.log.Errorf("Save failed err:%s", err.Error())
+		return err
+	}
+
+	repo.log.Infof("CreateStock start success")
+	return nil
+}
+
+func (repo *itemStockRepo) CreateStockWithTx(ctx context.Context, stock *biz.ItemStock) error {
+	repo.log.Infof("CreateStock start stock:%s", dec.JsonEncode(stock))
+
+	txValue := ctx.Value(common.TxKey)
+	tx, ok := txValue.(*ent.Tx)
+	if !ok {
+		return errors.New("事务对象不存在")
+	}
+
+	_, err := tx.Item.Create().
 		SetID(stock.SkuId).
 		SetTotalStock(int(stock.TotalStock)).
 		SetLeftStock(int(stock.TotalStock)).

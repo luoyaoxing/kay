@@ -8,6 +8,7 @@ import (
 
 type ProductRepo interface {
 	CreateProduct(ctx context.Context, p *Product) (int64, error)
+	CreateProductWithTx(ctx context.Context, p *Product) (int64, error)
 	GetProductById(ctx context.Context, skuId int64) (*Product, error)
 	ListProductByProductId(ctx context.Context, productId int64) ([]*Product, error)
 }
@@ -19,6 +20,19 @@ type ProductUseCase struct {
 
 func NewProductUseCase(repo ProductRepo, logger log.Logger) *ProductUseCase {
 	return &ProductUseCase{repo: repo, log: log.NewHelper("product/biz", logger)}
+}
+
+func (uc *ProductUseCase) CreateProductWithTx(ctx context.Context, p *Product) (int64, error) {
+	uc.log.Infof("create start p:%s ", dec.JsonEncode(p))
+
+	skuId, err := uc.repo.CreateProductWithTx(ctx, p)
+	if err != nil {
+		uc.log.Errorf("create product failed err:%s", err.Error())
+		return 0, err
+	}
+
+	uc.log.Info("create success skuId:%s", skuId)
+	return skuId, nil
 }
 
 func (uc *ProductUseCase) CreateProduct(ctx context.Context, p *Product) (int64, error) {

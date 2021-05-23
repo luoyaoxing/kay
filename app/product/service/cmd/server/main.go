@@ -82,7 +82,7 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	productRepo := data.NewProductRepo(dataData, logger)
 	itemStockUseCase := biz.NewItemStockUseCase(itemStockRepo, logger)
 	productUseCase := biz.NewProductUseCase(productRepo, logger)
-	productService := service.NewProductService(productUseCase, itemStockUseCase, logger)
+	productService := service.NewProductService(productUseCase, itemStockUseCase, dataData, logger)
 	grpcServer := server.NewGrpcServer(confServer, productService)
 	registrar := server.NewRegistrar()
 	app := newApp(logger, grpcServer, registrar)

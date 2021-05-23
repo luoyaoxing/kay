@@ -5,6 +5,7 @@ import (
 	"github.com/google/wire"
 	pb "kay/api/product/v1"
 	"kay/app/product/service/internal/biz"
+	"kay/app/product/service/internal/data"
 )
 
 var ProviderSet = wire.NewSet(NewProductService)
@@ -15,13 +16,18 @@ type ProductService struct {
 	productUc   *biz.ProductUseCase
 	itemStockUc *biz.ItemStockUseCase
 
+	data *data.Data
+
 	log *log.Helper
 }
 
-func NewProductService(productUc *biz.ProductUseCase, itemStockUc *biz.ItemStockUseCase, logger log.Logger) pb.ProductServer {
+func NewProductService(productUc *biz.ProductUseCase, itemStockUc *biz.ItemStockUseCase, data *data.Data, logger log.Logger) pb.ProductServer {
 	return &ProductService{
 		productUc:   productUc,
 		itemStockUc: itemStockUc,
-		log:         log.NewHelper("product/service", logger),
+
+		data: data,
+
+		log: log.NewHelper("product/service", logger),
 	}
 }
