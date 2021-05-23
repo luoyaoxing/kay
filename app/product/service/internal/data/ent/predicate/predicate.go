@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Item is the predicate function for item builders.
+type Item func(*sql.Selector)
+
 // Product is the predicate function for product builders.
 type Product func(*sql.Selector)

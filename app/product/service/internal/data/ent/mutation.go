@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"fmt"
+	"kay/app/product/service/internal/data/ent/item"
 	"kay/app/product/service/internal/data/ent/predicate"
 	"kay/app/product/service/internal/data/ent/product"
 	"sync"
@@ -22,8 +23,620 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeItem    = "Item"
 	TypeProduct = "Product"
 )
+
+// ItemMutation represents an operation that mutates the Item nodes in the graph.
+type ItemMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int64
+	totalStock      *int
+	addtotalStock   *int
+	consumeStock    *int
+	addconsumeStock *int
+	leftStock       *int
+	addleftStock    *int
+	addtime         *time.Time
+	mtime           *time.Time
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Item, error)
+	predicates      []predicate.Item
+}
+
+var _ ent.Mutation = (*ItemMutation)(nil)
+
+// itemOption allows management of the mutation configuration using functional options.
+type itemOption func(*ItemMutation)
+
+// newItemMutation creates new mutation for the Item entity.
+func newItemMutation(c config, op Op, opts ...itemOption) *ItemMutation {
+	m := &ItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withItemID sets the ID field of the mutation.
+func withItemID(id int64) itemOption {
+	return func(m *ItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Item
+		)
+		m.oldValue = func(ctx context.Context) (*Item, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Item.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withItem sets the old Item of the mutation.
+func withItem(node *Item) itemOption {
+	return func(m *ItemMutation) {
+		m.oldValue = func(context.Context) (*Item, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Item entities.
+func (m *ItemMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID
+// is only available if it was provided to the builder.
+func (m *ItemMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetTotalStock sets the "totalStock" field.
+func (m *ItemMutation) SetTotalStock(i int) {
+	m.totalStock = &i
+	m.addtotalStock = nil
+}
+
+// TotalStock returns the value of the "totalStock" field in the mutation.
+func (m *ItemMutation) TotalStock() (r int, exists bool) {
+	v := m.totalStock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalStock returns the old "totalStock" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldTotalStock(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldTotalStock is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldTotalStock requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalStock: %w", err)
+	}
+	return oldValue.TotalStock, nil
+}
+
+// AddTotalStock adds i to the "totalStock" field.
+func (m *ItemMutation) AddTotalStock(i int) {
+	if m.addtotalStock != nil {
+		*m.addtotalStock += i
+	} else {
+		m.addtotalStock = &i
+	}
+}
+
+// AddedTotalStock returns the value that was added to the "totalStock" field in this mutation.
+func (m *ItemMutation) AddedTotalStock() (r int, exists bool) {
+	v := m.addtotalStock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalStock resets all changes to the "totalStock" field.
+func (m *ItemMutation) ResetTotalStock() {
+	m.totalStock = nil
+	m.addtotalStock = nil
+}
+
+// SetConsumeStock sets the "consumeStock" field.
+func (m *ItemMutation) SetConsumeStock(i int) {
+	m.consumeStock = &i
+	m.addconsumeStock = nil
+}
+
+// ConsumeStock returns the value of the "consumeStock" field in the mutation.
+func (m *ItemMutation) ConsumeStock() (r int, exists bool) {
+	v := m.consumeStock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConsumeStock returns the old "consumeStock" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldConsumeStock(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldConsumeStock is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldConsumeStock requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConsumeStock: %w", err)
+	}
+	return oldValue.ConsumeStock, nil
+}
+
+// AddConsumeStock adds i to the "consumeStock" field.
+func (m *ItemMutation) AddConsumeStock(i int) {
+	if m.addconsumeStock != nil {
+		*m.addconsumeStock += i
+	} else {
+		m.addconsumeStock = &i
+	}
+}
+
+// AddedConsumeStock returns the value that was added to the "consumeStock" field in this mutation.
+func (m *ItemMutation) AddedConsumeStock() (r int, exists bool) {
+	v := m.addconsumeStock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetConsumeStock resets all changes to the "consumeStock" field.
+func (m *ItemMutation) ResetConsumeStock() {
+	m.consumeStock = nil
+	m.addconsumeStock = nil
+}
+
+// SetLeftStock sets the "leftStock" field.
+func (m *ItemMutation) SetLeftStock(i int) {
+	m.leftStock = &i
+	m.addleftStock = nil
+}
+
+// LeftStock returns the value of the "leftStock" field in the mutation.
+func (m *ItemMutation) LeftStock() (r int, exists bool) {
+	v := m.leftStock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLeftStock returns the old "leftStock" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldLeftStock(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldLeftStock is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldLeftStock requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLeftStock: %w", err)
+	}
+	return oldValue.LeftStock, nil
+}
+
+// AddLeftStock adds i to the "leftStock" field.
+func (m *ItemMutation) AddLeftStock(i int) {
+	if m.addleftStock != nil {
+		*m.addleftStock += i
+	} else {
+		m.addleftStock = &i
+	}
+}
+
+// AddedLeftStock returns the value that was added to the "leftStock" field in this mutation.
+func (m *ItemMutation) AddedLeftStock() (r int, exists bool) {
+	v := m.addleftStock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLeftStock resets all changes to the "leftStock" field.
+func (m *ItemMutation) ResetLeftStock() {
+	m.leftStock = nil
+	m.addleftStock = nil
+}
+
+// SetAddtime sets the "addtime" field.
+func (m *ItemMutation) SetAddtime(t time.Time) {
+	m.addtime = &t
+}
+
+// Addtime returns the value of the "addtime" field in the mutation.
+func (m *ItemMutation) Addtime() (r time.Time, exists bool) {
+	v := m.addtime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAddtime returns the old "addtime" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldAddtime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldAddtime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldAddtime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAddtime: %w", err)
+	}
+	return oldValue.Addtime, nil
+}
+
+// ResetAddtime resets all changes to the "addtime" field.
+func (m *ItemMutation) ResetAddtime() {
+	m.addtime = nil
+}
+
+// SetMtime sets the "mtime" field.
+func (m *ItemMutation) SetMtime(t time.Time) {
+	m.mtime = &t
+}
+
+// Mtime returns the value of the "mtime" field in the mutation.
+func (m *ItemMutation) Mtime() (r time.Time, exists bool) {
+	v := m.mtime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMtime returns the old "mtime" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldMtime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldMtime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldMtime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMtime: %w", err)
+	}
+	return oldValue.Mtime, nil
+}
+
+// ResetMtime resets all changes to the "mtime" field.
+func (m *ItemMutation) ResetMtime() {
+	m.mtime = nil
+}
+
+// Op returns the operation name.
+func (m *ItemMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Item).
+func (m *ItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ItemMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.totalStock != nil {
+		fields = append(fields, item.FieldTotalStock)
+	}
+	if m.consumeStock != nil {
+		fields = append(fields, item.FieldConsumeStock)
+	}
+	if m.leftStock != nil {
+		fields = append(fields, item.FieldLeftStock)
+	}
+	if m.addtime != nil {
+		fields = append(fields, item.FieldAddtime)
+	}
+	if m.mtime != nil {
+		fields = append(fields, item.FieldMtime)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case item.FieldTotalStock:
+		return m.TotalStock()
+	case item.FieldConsumeStock:
+		return m.ConsumeStock()
+	case item.FieldLeftStock:
+		return m.LeftStock()
+	case item.FieldAddtime:
+		return m.Addtime()
+	case item.FieldMtime:
+		return m.Mtime()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case item.FieldTotalStock:
+		return m.OldTotalStock(ctx)
+	case item.FieldConsumeStock:
+		return m.OldConsumeStock(ctx)
+	case item.FieldLeftStock:
+		return m.OldLeftStock(ctx)
+	case item.FieldAddtime:
+		return m.OldAddtime(ctx)
+	case item.FieldMtime:
+		return m.OldMtime(ctx)
+	}
+	return nil, fmt.Errorf("unknown Item field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case item.FieldTotalStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalStock(v)
+		return nil
+	case item.FieldConsumeStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConsumeStock(v)
+		return nil
+	case item.FieldLeftStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLeftStock(v)
+		return nil
+	case item.FieldAddtime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAddtime(v)
+		return nil
+	case item.FieldMtime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMtime(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Item field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ItemMutation) AddedFields() []string {
+	var fields []string
+	if m.addtotalStock != nil {
+		fields = append(fields, item.FieldTotalStock)
+	}
+	if m.addconsumeStock != nil {
+		fields = append(fields, item.FieldConsumeStock)
+	}
+	if m.addleftStock != nil {
+		fields = append(fields, item.FieldLeftStock)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case item.FieldTotalStock:
+		return m.AddedTotalStock()
+	case item.FieldConsumeStock:
+		return m.AddedConsumeStock()
+	case item.FieldLeftStock:
+		return m.AddedLeftStock()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case item.FieldTotalStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalStock(v)
+		return nil
+	case item.FieldConsumeStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddConsumeStock(v)
+		return nil
+	case item.FieldLeftStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLeftStock(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Item numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ItemMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ItemMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Item nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ItemMutation) ResetField(name string) error {
+	switch name {
+	case item.FieldTotalStock:
+		m.ResetTotalStock()
+		return nil
+	case item.FieldConsumeStock:
+		m.ResetConsumeStock()
+		return nil
+	case item.FieldLeftStock:
+		m.ResetLeftStock()
+		return nil
+	case item.FieldAddtime:
+		m.ResetAddtime()
+		return nil
+	case item.FieldMtime:
+		m.ResetMtime()
+		return nil
+	}
+	return fmt.Errorf("unknown Item field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ItemMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ItemMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ItemMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ItemMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Item unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ItemMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Item edge %s", name)
+}
 
 // ProductMutation represents an operation that mutates the Product nodes in the graph.
 type ProductMutation struct {

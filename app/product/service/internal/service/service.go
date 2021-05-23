@@ -12,14 +12,16 @@ var ProviderSet = wire.NewSet(NewProductService)
 type ProductService struct {
 	pb.UnimplementedProductServer
 
-	productUc *biz.ProductUseCase
+	productUc   *biz.ProductUseCase
+	itemStockUc *biz.ItemStockUseCase
 
 	log *log.Helper
 }
 
-func NewProductService(productUc *biz.ProductUseCase, logger log.Logger) pb.ProductServer {
+func NewProductService(productUc *biz.ProductUseCase, itemStockUc *biz.ItemStockUseCase, logger log.Logger) pb.ProductServer {
 	return &ProductService{
-		productUc: productUc,
-		log:       log.NewHelper("product/service", logger),
+		productUc:   productUc,
+		itemStockUc: itemStockUc,
+		log:         log.NewHelper("product/service", logger),
 	}
 }

@@ -22,6 +22,8 @@ const _ = http1.SupportPackageIsVersion1
 type ProductHandler interface {
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductReply, error)
 
+	DeStock(context.Context, *DeStockRequest) (*DeStockReply, error)
+
 	GetProductInfo(context.Context, *GetProductInfoRequest) (*GetProductInfoReply, error)
 
 	ListProductByProductId(context.Context, *ListProductByProductIdRequest) (*ListProductByProductIdReply, error)
@@ -101,6 +103,30 @@ func NewProductHandler(srv ProductHandler, opts ...http1.HandleOption) http.Hand
 			return
 		}
 		reply := out.(*ListProductByProductIdReply)
+		if err := h.Encode(w, r, reply); err != nil {
+			h.Error(w, r, err)
+		}
+	}).Methods("POST")
+
+	r.HandleFunc("/api.product.v1.Product/DeStock", func(w http.ResponseWriter, r *http.Request) {
+		var in DeStockRequest
+		if err := h.Decode(r, &in); err != nil {
+			h.Error(w, r, err)
+			return
+		}
+
+		next := func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DeStock(ctx, req.(*DeStockRequest))
+		}
+		if h.Middleware != nil {
+			next = h.Middleware(next)
+		}
+		out, err := next(r.Context(), &in)
+		if err != nil {
+			h.Error(w, r, err)
+			return
+		}
+		reply := out.(*DeStockReply)
 		if err := h.Encode(w, r, reply); err != nil {
 			h.Error(w, r, err)
 		}

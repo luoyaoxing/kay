@@ -29,6 +29,20 @@ func (s *ProductService) CreateProduct(ctx context.Context, req *pb.CreateProduc
 		return reply, nil
 	}
 
+	stock := req.Body.GetStock()
+
+	itemStock := &biz.ItemStock{
+		SkuId:      skuId,
+		TotalStock: stock,
+	}
+	err = s.itemStockUc.CreateStock(ctx, itemStock)
+	if err != nil {
+		replyHeader.Errno = 10001
+		replyHeader.Errmsg = "创建产品库存失败"
+		s.log.Errorf("CreateStock failed err:%s", err.Error())
+		return reply, nil
+	}
+
 	replyBody := &pb.CreateProductReply_Body{}
 	replyBody.SkuId = skuId
 
@@ -92,5 +106,34 @@ func (s *ProductService) ListProductByProductId(ctx context.Context, req *pb.Lis
 	replyBody.ProductList = productDtoList
 
 	reply.Body = replyBody
+	return reply, nil
+}
+
+func (s *ProductService) DeStock(ctx context.Context, req *pb.DeStockRequest) (*pb.DeStockReply, error) {
+	s.log.Infof("DeStock start req:%s", dec.JsonEncode(req))
+
+	reply := &pb.DeStockReply{}
+
+	replyHeader := &pb.ResponseHeader{}
+	replyHeader.Errno = 0
+	replyHeader.Errmsg = "success"
+	reply.Header = replyHeader
+
+	skuId := req.Body.GetSkuId()
+	p, err := s.productUc.GetProductInfo(ctx, skuId)
+	if err != nil {
+		replyHeader.Errno = 10001
+		replyHeader.Errmsg = "查询产品失败"
+		s.log.Errorf("getProductInfo falied err:%s", err.Error())
+		return reply, nil
+	}
+
+	_, err = s.itemStockUc.DoDeStock(ctx, p)
+	if err != nil {
+		replyHeader.Errno = 10002
+		replyHeader.Errmsg = "扣减库存失败"
+		s.log.Errorf("getProductInfo falied err:%s", err.Error())
+		return reply, nil
+	}
 	return reply, nil
 }

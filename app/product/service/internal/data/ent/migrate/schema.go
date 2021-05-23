@@ -9,6 +9,22 @@ import (
 )
 
 var (
+	// TItemStockColumns holds the columns for the "t_item_stock" table.
+	TItemStockColumns = []*schema.Column{
+		{Name: "fsku_id", Type: field.TypeInt64, Increment: true},
+		{Name: "ftotal_stock", Type: field.TypeInt, Default: 0},
+		{Name: "fconsume_Stock", Type: field.TypeInt, Default: 0},
+		{Name: "fleft_Stock", Type: field.TypeInt, Default: 0},
+		{Name: "faddtime", Type: field.TypeTime},
+		{Name: "fmtime", Type: field.TypeTime},
+	}
+	// TItemStockTable holds the schema information for the "t_item_stock" table.
+	TItemStockTable = &schema.Table{
+		Name:        "t_item_stock",
+		Columns:     TItemStockColumns,
+		PrimaryKey:  []*schema.Column{TItemStockColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
 	// TProductColumns holds the columns for the "t_product" table.
 	TProductColumns = []*schema.Column{
 		{Name: "fsku_id", Type: field.TypeInt64, Increment: true},
@@ -31,11 +47,15 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		TItemStockTable,
 		TProductTable,
 	}
 )
 
 func init() {
+	TItemStockTable.Annotation = &entsql.Annotation{
+		Table: "t_item_stock",
+	}
 	TProductTable.Annotation = &entsql.Annotation{
 		Table: "t_product",
 	}

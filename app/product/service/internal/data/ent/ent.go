@@ -5,6 +5,7 @@ package ent
 import (
 	"errors"
 	"fmt"
+	"kay/app/product/service/internal/data/ent/item"
 	"kay/app/product/service/internal/data/ent/product"
 
 	"entgo.io/ent"
@@ -31,6 +32,7 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
+		item.Table:    item.ValidColumn,
 		product.Table: product.ValidColumn,
 	}
 	check, ok := checks[table]

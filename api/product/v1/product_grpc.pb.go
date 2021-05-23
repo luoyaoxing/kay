@@ -20,6 +20,7 @@ type ProductClient interface {
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductReply, error)
 	GetProductInfo(ctx context.Context, in *GetProductInfoRequest, opts ...grpc.CallOption) (*GetProductInfoReply, error)
 	ListProductByProductId(ctx context.Context, in *ListProductByProductIdRequest, opts ...grpc.CallOption) (*ListProductByProductIdReply, error)
+	DeStock(ctx context.Context, in *DeStockRequest, opts ...grpc.CallOption) (*DeStockReply, error)
 }
 
 type productClient struct {
@@ -57,6 +58,15 @@ func (c *productClient) ListProductByProductId(ctx context.Context, in *ListProd
 	return out, nil
 }
 
+func (c *productClient) DeStock(ctx context.Context, in *DeStockRequest, opts ...grpc.CallOption) (*DeStockReply, error) {
+	out := new(DeStockReply)
+	err := c.cc.Invoke(ctx, "/api.product.v1.Product/DeStock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductServer is the server API for Product service.
 // All implementations must embed UnimplementedProductServer
 // for forward compatibility
@@ -64,6 +74,7 @@ type ProductServer interface {
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductReply, error)
 	GetProductInfo(context.Context, *GetProductInfoRequest) (*GetProductInfoReply, error)
 	ListProductByProductId(context.Context, *ListProductByProductIdRequest) (*ListProductByProductIdReply, error)
+	DeStock(context.Context, *DeStockRequest) (*DeStockReply, error)
 	mustEmbedUnimplementedProductServer()
 }
 
@@ -79,6 +90,9 @@ func (*UnimplementedProductServer) GetProductInfo(context.Context, *GetProductIn
 }
 func (*UnimplementedProductServer) ListProductByProductId(context.Context, *ListProductByProductIdRequest) (*ListProductByProductIdReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListProductByProductId not implemented")
+}
+func (*UnimplementedProductServer) DeStock(context.Context, *DeStockRequest) (*DeStockReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeStock not implemented")
 }
 func (*UnimplementedProductServer) mustEmbedUnimplementedProductServer() {}
 
@@ -140,6 +154,24 @@ func _Product_ListProductByProductId_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Product_DeStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeStockRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServer).DeStock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.product.v1.Product/DeStock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServer).DeStock(ctx, req.(*DeStockRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Product_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "api.product.v1.Product",
 	HandlerType: (*ProductServer)(nil),
@@ -155,6 +187,10 @@ var _Product_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListProductByProductId",
 			Handler:    _Product_ListProductByProductId_Handler,
+		},
+		{
+			MethodName: "DeStock",
+			Handler:    _Product_DeStock_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
