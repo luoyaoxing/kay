@@ -9,6 +9,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	v1 "kay/api/deal/v1"
 	"kay/app/deal/service/internal/conf"
+	"kay/app/deal/service/middleware/ratelimit"
 )
 
 // NewGRPCServer new a gRPC server.
@@ -19,6 +20,7 @@ func NewGRPCServer(c *conf.Server, s v1.DealServer, logger log.Logger) *grpc.Ser
 				recovery.Recovery(),
 				tracing.Server(),
 				logging.Server(logger),
+				ratelimit.Funnel(),
 			),
 		),
 	}
