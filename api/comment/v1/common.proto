@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package api.deal.v1;
+
+option go_package = "kay/api/deal/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.deal.v1";
+
+message RequestHeader {
+    string source = 1;
+    string chn = 2;
+}
+
+message ResponseHeader {
+    int32 errno = 1;
+    string errmsg = 2;
+}
