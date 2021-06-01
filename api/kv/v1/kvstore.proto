@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package api.kv.v1;
+
+option go_package = "kay/api/kv/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.kv.v1";
+
+import "common.proto";
+
+service Kvstore {
+    rpc PutKvstore (PutKvstoreRequest) returns (PutKvstoreReply);
+    rpc GetKvstore (GetKvstoreRequest) returns (GetKvstoreReply);
+}
+
+message PutKvstoreRequest {
+    RequestHeader header = 1;
+    string k = 2;
+    string v = 3;
+}
+message PutKvstoreReply {
+    ResponseHeader header = 1;
+}
+
+message GetKvstoreRequest {
+    RequestHeader header = 1;
+    string k = 2;
+}
+
+message GetKvstoreReply {
+    ResponseHeader header = 1;
+    string v = 2;
+}

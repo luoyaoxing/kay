@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	entgo.io/ent v0.8.0
+	github.com/coreos/etcd v3.3.13+incompatible
 	github.com/go-kratos/consul v0.0.0-20210425141546-e047a9f6ec87
 	github.com/go-kratos/kratos/v2 v2.0.0-beta4
 	github.com/go-sql-driver/mysql v1.5.1-0.20200311113236-681ffa848bae
@@ -24,3 +25,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
+
+replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
